@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GPS Kotlin</string>
+    <string name="title">Location Tracker</string>
+    <string name="location">Current Location:</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="map_button">Press to go to map</string>
+    <string name="api_key">AIzaSyCOBNouc25OaJLalS_kpQQW0pqZ2WeRUUQ</string>
+</resources>
