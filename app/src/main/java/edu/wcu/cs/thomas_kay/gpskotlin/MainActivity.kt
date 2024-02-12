@@ -55,9 +55,10 @@ class MainActivity : AppCompatActivity() {
         locationTextView = this.findViewById(R.id.location_text)
 
         this.setLaunchers()
-        this.createRequest()
+        //this.createRequest()
 
 
+        /*
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
@@ -69,12 +70,13 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+         */
 
 
         updateFragment()
         setReceiver()
-        updateGPS()
-        //setUpService()
+        //updateGPS()
+        setUpService()
 
     }
 
@@ -87,13 +89,15 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(broadcastReceiver, filter)
 
 
-
+        /*
         try {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,
             null)
         } catch(error:SecurityException) {
             Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
         }
+
+         */
 
     }
 
@@ -105,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             Log.v("error", error.message ?: "Error")
         }
         //Delete
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        //fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     private fun setReceiver() {
@@ -139,13 +143,13 @@ class MainActivity : AppCompatActivity() {
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     Toast.makeText(this, "Fine permission granted", Toast.LENGTH_LONG).show()
-                    //startService(intent)
-                    updateGPS()
+                    startService(intent)
+                    //updateGPS()
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                     Toast.makeText(this, "Coarse permission granted", Toast.LENGTH_LONG).show()
-                    //startService(intent)
-                    updateGPS()
+                    startService(intent)
+                    //updateGPS()
                 }
                 else -> {
                     Toast.makeText(this, "Need permissions to access location",
