@@ -3,6 +3,7 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.app.Service
 import android.content.Intent
 import android.location.Location
+import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -12,16 +13,26 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import edu.wcu.cs.thomas_kay.gpskotlin.EntryScreen.Companion.DATABASE_NAME
 import java.lang.UnsupportedOperationException
 
+
+const val DATABASE_EXTENSION = ".db"
 class ServiceGPS : Service() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback : LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private var databaseHelper: PathDatabaseHelper? = null
+    private var cnt:Int = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        val bundle: Bundle? = intent!!.extras
+        if(bundle != null) {
+            val databaseName = bundle.getString(DATABASE_NAME) + DATABASE_EXTENSION
+            databaseHelper = PathDatabaseHelper(this, databaseName)
+        }
         createRequest()
         createCallback()
         setGPS()
@@ -44,6 +55,8 @@ class ServiceGPS : Service() {
                 super.onLocationResult(locationResult)
                 val lastLocation: Location? = locationResult.lastLocation
                 if(lastLocation != null) {
+                    databaseHelper?.insert(lastLocation, cnt)
+                    cnt++
                     updateLocation(lastLocation)
                 }
             }
@@ -71,6 +84,7 @@ class ServiceGPS : Service() {
     private fun updateLocation(location:Location) {
         val lat:Double = location.latitude
         val long:Double = location.longitude
+        val accuracy:Float = location.accuracy
         val latString = if(lat >= 0) {
             "Latitude: $lat N"
         } else {
@@ -81,7 +95,9 @@ class ServiceGPS : Service() {
         } else {
             "Longitude: ${long * -1} W"
         }
-        val coordinates:String = getString(R.string.location) + "\n" + latString + "\n" + longString
+        val accurString = "Accuracy: $accuracy"
+        val coordinates:String = getString(R.string.location) + "\n" + latString + "\n" + longString + "\n" +
+                accurString
         doBroadcast(lat, long, coordinates)
     }
 

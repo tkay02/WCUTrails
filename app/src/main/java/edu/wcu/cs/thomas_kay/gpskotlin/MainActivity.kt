@@ -30,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import edu.wcu.cs.thomas_kay.gpskotlin.EntryScreen.Companion.DATABASE_NAME
 
 //private constants
 const val TIME_INTERVAL:Long = 5000
@@ -51,12 +52,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.v("Test", "step 1")
-
         locationTextView = this.findViewById(R.id.location_text)
+
+        var databaseName:String? = null
+
+        val bundle:Bundle? = intent.extras
+        if(bundle != null) {
+            databaseName = bundle.getString(DATABASE_NAME)
+        }
 
         this.setLaunchers()
         //this.createRequest()
-
 
         /*
         locationCallback = object : LocationCallback() {
@@ -72,18 +78,16 @@ class MainActivity : AppCompatActivity() {
         }
          */
 
-
         updateFragment()
         setReceiver()
         //updateGPS()
-        setUpService()
+        setUpService(databaseName)
 
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
-
         val filter = IntentFilter()
         filter.addAction(ServiceGPS.GPS)
         registerReceiver(broadcastReceiver, filter)
@@ -161,13 +165,16 @@ class MainActivity : AppCompatActivity() {
         Log.v("Test", "step 2")
     }
 
-    private fun setUpService() {
+    private fun setUpService(databaseName:String?) {
         Log.v("Test", "step 4")
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(this, ServiceGPS::class.java)
+            if(databaseName != null) {
+                intent.putExtra(DATABASE_NAME, databaseName)
+            }
             this.startService(intent)
             Log.v("Test", "service started")
         } else {
@@ -259,6 +266,13 @@ class MainActivity : AppCompatActivity() {
             "Current Location"))
         this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
 
+    }
+
+    //Ends service when activity is finished
+    override fun finish() {
+        super.finish()
+        intent = Intent(this, ServiceGPS::class.java)
+        stopService(intent)
     }
 
 }
