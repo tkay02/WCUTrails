@@ -5,14 +5,14 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.location.Location
+import com.google.android.gms.maps.model.LatLng
 
 class PathDatabaseHelper(context: Context, databaseName: String) :
     SQLiteOpenHelper(context, databaseName, null, 1) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val query = "CREATE TABLE " + TRAIL_TABLE + " (" + TRAIL_POINT + " " +
-                "INTEGER UNIQUE, " + TRAIL_LAT + " REAL," + TRAIL_LNG +
-                " REAL, PRIMARY KEY(" + TRAIL_LAT + "," + TRAIL_LNG +"));"
+        val query = "CREATE TABLE $TRAIL_TABLE ($TRAIL_POINT INTEGER UNIQUE, $TRAIL_LAT  REAL, "+
+                "$TRAIL_LNG REAL, PRIMARY KEY($TRAIL_LAT, $TRAIL_LNG));"
         db!!.execSQL(query)
     }
 
@@ -31,6 +31,28 @@ class PathDatabaseHelper(context: Context, databaseName: String) :
             return false
         }
         return true
+    }
+
+    fun getCoordinates():ArrayList<LatLng> {
+        val list = ArrayList<LatLng>()
+        val query = "SELECT * FROM $TRAIL_TABLE" //Change this to SELECT LAT, LNG
+        val db:SQLiteDatabase = readableDatabase
+        val cursor = db.rawQuery(query, null)
+        if(cursor != null) {
+            if(cursor.moveToFirst()) {
+                var i = 0
+                while(i < cursor.count) {
+                    val lat = cursor.getDouble(1)
+                    val long = cursor.getDouble(2)
+                    list.add(LatLng(lat, long))
+                    cursor.moveToNext()
+                    i++
+                }
+            }
+            cursor.close()
+        }
+        db.close()
+        return list
     }
 
     //Public Constants
