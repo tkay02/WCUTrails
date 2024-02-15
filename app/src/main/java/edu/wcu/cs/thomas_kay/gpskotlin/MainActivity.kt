@@ -11,6 +11,7 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -47,12 +48,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationCallback:LocationCallback
     private var prevMarker: Marker? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
+    private lateinit var quit:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.v("Test", "step 1")
         locationTextView = this.findViewById(R.id.location_text)
+        quit = this.findViewById(R.id.quitButton)
+        quit.setOnClickListener{
+            intent = Intent(this, ServiceGPS::class.java)
+            stopService(intent)
+            finish()
+        }
 
         var databaseName:String? = null
 
@@ -266,13 +274,6 @@ class MainActivity : AppCompatActivity() {
             "Current Location"))
         this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
 
-    }
-
-    //Ends service when activity is finished
-    override fun finish() {
-        super.finish()
-        intent = Intent(this, ServiceGPS::class.java)
-        stopService(intent)
     }
 
 }

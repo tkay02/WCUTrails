@@ -15,9 +15,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import edu.wcu.cs.thomas_kay.gpskotlin.databinding.ActivityMapsBinding
 
-const val DEMO:String = "demoTest0.db"
+const val DEMO:String = "trailDemo1.db"
 const val WIDTH:Float = 15f
-const val PADDING:Int = 35
+const val PADDING:Int = 115
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
