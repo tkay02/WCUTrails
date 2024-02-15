@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 
+
 class PathDatabaseHelper(context: Context, databaseName: String) :
     SQLiteOpenHelper(context, databaseName, null, 1) {
 

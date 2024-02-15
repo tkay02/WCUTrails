@@ -6,7 +6,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationCallback
@@ -56,6 +55,7 @@ class ServiceGPS : Service() {
                 super.onLocationResult(locationResult)
                 val lastLocation: Location? = locationResult.lastLocation
                 if(lastLocation != null) {
+                    //Insert location into database if helper is not null
                     databaseHelper?.insert(lastLocation, cnt)
                     cnt++
                     updateLocation(lastLocation)
@@ -72,16 +72,13 @@ class ServiceGPS : Service() {
                     updateLocation(it)
                 }
             }
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest, locationCallback, null)
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,
+                null)
         } catch(error:SecurityException) {
             Log.v("Error", error.message ?: "Something else went wrong")
         }
     }
 
-    /**
-     * Testing
-     */
     private fun updateLocation(location:Location) {
         val lat:Double = location.latitude
         val long:Double = location.longitude
@@ -96,6 +93,8 @@ class ServiceGPS : Service() {
         } else {
             "Longitude: ${long * -1} W"
         }
+        //Used to inform that recorded location is 68% accurate within listed meters
+        //i.e. Accuracy: 5.5 -> 68% accurate within 5.5 meters
         val accurString = "Accuracy: $accuracy"
         val coordinates:String = getString(R.string.location) + "\n" + latString + "\n" + longString + "\n" +
                 accurString
@@ -115,7 +114,7 @@ class ServiceGPS : Service() {
         throw UnsupportedOperationException("Not implemented")
     }
 
-    //public constants
+    //public constants - another way for using constants
     companion object {
         const val GPS:String = "GPS"
     }

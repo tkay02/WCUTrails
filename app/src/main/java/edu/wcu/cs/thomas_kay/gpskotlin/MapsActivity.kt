@@ -49,10 +49,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        //Displays a path collected from points obtained in a database file
         val list:ArrayList<LatLng> = databaseHelper.getCoordinates()
         if(list.size != 0) {
             val origin:LatLng = list[0]
             val destination:LatLng = list[list.size - 1]
+            //Object used to print path onto a GoogleMap
             val path = PolylineOptions()
             path.addAll(list)
             path.width(WIDTH)
@@ -70,7 +72,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             Toast.makeText(this, "Demo is not available for this device",
                 Toast.LENGTH_LONG).show()
         }
-
+        // Code from built in MapActivity
         // Add a marker in Sydney and move the camera
         //val sydney = LatLng(-34.0, 151.0)
         //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
