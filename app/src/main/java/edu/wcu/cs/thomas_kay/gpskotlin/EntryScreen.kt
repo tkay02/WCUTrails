@@ -55,7 +55,7 @@ class EntryScreen : AppCompatActivity() {
     }
 
     private fun goToDemoActivity() {
-        intent = Intent(this, MapsActivity::class.java)
+        intent = Intent(this, TrailSelector::class.java)
         startActivity(intent)
     }
 

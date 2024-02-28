@@ -15,14 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GPSKotlin"
         tools:targetApi="31">
+        <activity
+            android:name=".TrailSelector"
+            android:exported="false" />
+        <activity
+            android:name=".TrailObserver"
+            android:exported="false" />
 
         <service
             android:name=".ServiceGPS"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location">
-        </service>
-        <!-- Important for map -->
+            android:foregroundServiceType="location" /> <!-- Important for map -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
@@ -33,11 +37,10 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".EntryScreen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -64,11 +64,3 @@ class PathDatabaseHelper(context: Context, databaseName: String) :
         const val TRAIL_LNG:String = "LNG"
     }
 }
-
-//Class to display/hold data
-class Coordinate(val point:Int, val latitude:Double, val longitude:Double) {
-    override fun toString():String {
-        return "${point}. \tLat: $latitude \tLong: $longitude"
-    }
-
-}

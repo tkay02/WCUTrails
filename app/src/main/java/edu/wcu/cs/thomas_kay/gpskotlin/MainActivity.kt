@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -36,19 +35,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationPermissions:ActivityResultLauncher<Array<String>>
     private var prevMarker: Marker? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
-    private lateinit var quit:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         locationTextView = this.findViewById(R.id.location_text)
-        quit = this.findViewById(R.id.quitButton)
-        //Rewrite for onStop or onDestroy?
-        quit.setOnClickListener{
-            intent = Intent(this, ServiceGPS::class.java)
-            stopService(intent)
-            finish()
-        }
         var databaseName:String? = null
         val bundle:Bundle? = intent.extras
         if(bundle != null) {
@@ -75,6 +66,12 @@ class MainActivity : AppCompatActivity() {
         } catch(error:Error) {
             Log.v("error", error.message ?: "Error")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val intent = Intent(this, ServiceGPS::class.java)
+        stopService(intent)
     }
 
     private fun setReceiver() {
@@ -168,5 +165,4 @@ class MainActivity : AppCompatActivity() {
         this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
 
     }
-
 }

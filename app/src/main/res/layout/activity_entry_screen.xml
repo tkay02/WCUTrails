@@ -86,7 +86,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/locate_button"
-        android:text="View Demo Path"
+        android:text="View Paths"
         android:textSize="25sp">
     </Button>
 
