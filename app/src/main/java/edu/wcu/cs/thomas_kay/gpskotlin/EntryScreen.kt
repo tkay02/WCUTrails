@@ -74,6 +74,15 @@ class EntryScreen : AppCompatActivity() {
         return Character.isDigit(arrayChar[0])
     }
 
+    //I only use this method to write my data onto Firebase automatically
+    //ONLY USE THIS METHOD TO AUTOMATE WRITING PROCESS TO FIREBASE DATABASE!!!
+    private fun writeToFirebase(fileName:String) {
+        val pathDatabaseHelper = PathDatabaseHelper(this, fileName)
+        val trailDatabaseHelper = TrailDatabaseHelper()
+        val latlngList = pathDatabaseHelper.getCoordinates()
+        trailDatabaseHelper.addPoints("Gribble Gap", latlngList)
+    }
+
     companion object {
         const val DATABASE_NAME = "DatabaseName"
     }

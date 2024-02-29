@@ -12,8 +12,8 @@ class PathDatabaseHelper(context: Context, databaseName: String) :
     SQLiteOpenHelper(context, databaseName, null, 1) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val query = "CREATE TABLE $TRAIL_TABLE ($TRAIL_POINT INTEGER UNIQUE, $TRAIL_LAT  REAL, "+
-                "$TRAIL_LNG REAL, PRIMARY KEY($TRAIL_LAT, $TRAIL_LNG));"
+        val query = "CREATE TABLE $TRAIL_TABLE ($TRAIL_POINT INTEGER PRIMARY KEY, "+
+        "$TRAIL_LAT REAL, $TRAIL_LNG REAL);"
         db!!.execSQL(query)
     }
 

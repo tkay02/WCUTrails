@@ -23,7 +23,7 @@ class ServiceGPS : Service() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback : LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private var databaseHelper: PathDatabaseHelper? = null
+    private var databaseHelper: PathDatabaseHelper? = null  //Change this to record to remote database
     private var cnt:Int = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

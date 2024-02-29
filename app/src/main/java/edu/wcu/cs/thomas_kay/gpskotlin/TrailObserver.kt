@@ -28,14 +28,15 @@ const val CURRENT:String = "Current Spot on Trail"
 class TrailObserver : AppCompatActivity() {
 
     private lateinit var trailName:String
-    private var trailIndex:Int = -1
     private lateinit var map:GoogleMap
     private lateinit var trail:Trail
     private var currentMarker:Marker? = null
+    private lateinit var trailArray:Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trail_observer)
+        trailArray = resources.getStringArray(R.array.name_of_trails)
         updateFragment()
         val prevButton:Button = this.findViewById(R.id.prev_button)
         prevButton.setOnClickListener { getPoint(true) }
@@ -46,10 +47,10 @@ class TrailObserver : AppCompatActivity() {
             this.trailName = bundle.getString(TRAIL_NAME)!!
             val tv:TextView = this.findViewById(R.id.trail_name)
             tv.text = this.trailName
-            this.trailIndex = bundle.getInt(TRAIL_INDEX)
         }
     }
 
+    //Move to onCreate()?
     override fun onStart() {
         super.onStart()
         val reference = FirebaseDatabase.getInstance().getReference(FIREDATABASE_NAME)
@@ -59,14 +60,14 @@ class TrailObserver : AppCompatActivity() {
                 val trailList = ArrayList<Trail>()
                 for((cnt, i) in snapshot.children.withIndex()) {
                     Log.v("num of children2", "${i.childrenCount}")
-                    val trail = Trail(LIST_OF_TRAILS[cnt])
+                    val trail = Trail(trailArray[cnt])
                     for(j in i.children) {
                         val trailPathPoint = j.getValue(TrailPathPoint::class.java)
                         trail.add(trailPathPoint?.lat!!, trailPathPoint.lng!!)
                     }
                     trailList.add(trail)
                 }
-                trail = trailList[trailIndex]
+                trail = trailList[trailArray.indexOf(trailName)]
                 Log.v("trail success", "Trail was successfully created")
                 recordPoints()
             }
@@ -112,15 +113,17 @@ class TrailObserver : AppCompatActivity() {
     }
 
     private fun getPoint(isPrev:Boolean) {
-        if(this.currentMarker != null) {
-            this.currentMarker!!.remove()
+        if(this::trail.isInitialized) {
+            if (this.currentMarker != null) {
+                this.currentMarker!!.remove()
+            }
+            val currentPoint: Trail.TrailPoint = if (isPrev) {
+                this.trail.getPrevPoint()!!
+            } else {
+                this.trail.getNextPoint()!!
+            }
+            createCurrentMarker(currentPoint.lat, currentPoint.lng)
         }
-        val currentPoint:Trail.TrailPoint = if(isPrev) {
-            this.trail.getPrevPoint()!!
-        } else {
-            this.trail.getNextPoint()!!
-        }
-        createCurrentMarker(currentPoint.lat, currentPoint.lng)
     }
 
 

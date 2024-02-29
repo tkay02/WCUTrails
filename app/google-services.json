@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1090226593197",
+    "project_id": "gps-kotlin-bc2e0",
+    "storage_bucket": "gps-kotlin-bc2e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090226593197:android:1d73100c3dbf69d586d524",
+        "android_client_info": {
+          "package_name": "edu.wcu.cs.thomas_kay.gpskotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsMfvs8WVM-6khw6A507pU4NYqFtabDCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
