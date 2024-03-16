@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gps_color">#FFAD23FF</color>
+    <color name="qr_mask_color">#60000000</color>
 </resources>

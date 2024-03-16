@@ -102,30 +102,47 @@ class Trail(val trailName:String) {
         }
     }
 
-    //Needs testing
+    /**
+     * Returns the next point from the current point and sets the current point as its next point.
+     * If the current node is equal to the end of the trail (tail), sets the current node as the
+     * start of the trail (head).
+     *
+     * @return A node if the size of the trail is greater than one; returns null otherwise.
+     */
     fun getNextPoint():TrailPoint? {
-        if(this.size > 0) {
+        if(this.size > 1) {
             when (this.currentPoint) {
-                null, this.tail -> this.currentPoint = this.head
-                else -> this.currentPoint = this.currentPoint?.next
+                null, this.tail -> this.currentPoint = this.head //Sets current to head
+                else -> this.currentPoint = this.currentPoint?.next //Sets current to its next point
             }
             return currentPoint
         }
         return null
     }
 
-    //Needs testing
+    /**
+     * Returns the previous point from the current point and sets the current point as its previous
+     * point. If the current node is equal to the start of the trail (head), sets the current node
+     * as the end of the trail (tail).
+     *
+     * @return A node if the size of the trail is greater than one; returns null otherwise.
+     */
     fun getPrevPoint():TrailPoint? {
-        if(this.size > 0) {
+        if(this.size > 1) {
             when (this.currentPoint) {
-                null, this.head -> this.currentPoint = this.tail
-                else -> this.currentPoint = this.currentPoint?.prev
+                null, this.head -> this.currentPoint = this.tail //Sets current to tail
+                else -> this.currentPoint = this.currentPoint?.prev //Sets current to its prev point
             }
             return currentPoint
         }
         return null
     }
 
+    /**
+     * Iterates through the trail to return a list that contains all of the latitude and longitude
+     * coordinates stored in the trail. Used to collect all lat and lng coordinates to display on a
+     * GoogleMap fragment.
+     */
     fun iterate():ArrayList<LatLng> {
         val latlngList = ArrayList<LatLng>()
         var cursor = this.head
@@ -139,7 +156,14 @@ class Trail(val trailName:String) {
     /**
      * Inner class for Trail data structure. Stores an ID value that indicates which the order of
      * the trail points, depending on the length of the trail. Also stores information about the
-     * coordinates of the point and the next
+     * coordinates of the point and the pointers to the previous and next node.
+     *
+     * @param pointID The id of the point in regard to the order of the trail (starting from 1 to
+     * the size of the trail).
+     * @param lat The latitude coordinate.
+     * @param lng The longitude coordinate.
+     * @param prev Pointer to the previous point.
+     * @param next Pointer to the next point.
      */
     data class TrailPoint(val pointID:Int, val lat:Double, val lng:Double,
                      var prev:TrailPoint?, var next:TrailPoint?)

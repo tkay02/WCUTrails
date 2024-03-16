@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 
-
+/**
+ * Can possibly use this as a trail tracker for a user's personal use.
+ */
 class PathDatabaseHelper(context: Context, databaseName: String) :
     SQLiteOpenHelper(context, databaseName, null, 1) {
 

@@ -7,6 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+
+const val QRCODE:String = "QRCODE"
+const val RADIUS:Double = 5.0
 
 class EntryScreen : AppCompatActivity() {
 
@@ -14,6 +19,8 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var databaseEditText: EditText
     private lateinit var button1: Button
     private lateinit var button2: Button
+    private lateinit var button3: Button
+    private lateinit var qrcodeLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +31,9 @@ class EntryScreen : AppCompatActivity() {
         button1.setOnClickListener {goToLocationActivity()}
         button2 = findViewById(R.id.demo_button)
         button2.setOnClickListener {goToDemoActivity()}
+        button3 = findViewById(R.id.qr_code_button)
+        setUpLauncher()
+        button3.setOnClickListener {goToQRActivity()}
     }
 
     private fun goToLocationActivity() {
@@ -32,7 +42,7 @@ class EntryScreen : AppCompatActivity() {
             startActivity(intent)
         } else {
             val databaseName = databaseEditText.text.toString()
-            when {
+            when {          //when can be used as a switch-case and else-if block
                 databaseName == "" -> {
                     Toast.makeText(this, "Cannot have an empty string for name of database",
                         Toast.LENGTH_LONG).show()
@@ -59,6 +69,11 @@ class EntryScreen : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun goToQRActivity() {
+        val intent = Intent(this, QRScanner::class.java)
+        this.qrcodeLauncher.launch(intent)
+    }
+
     private fun noSpaces(name:String):Boolean {
         val arrayChar = name.toCharArray()
         for(i in arrayChar) {
@@ -82,6 +97,22 @@ class EntryScreen : AppCompatActivity() {
         val latlngList = pathDatabaseHelper.getCoordinates()
         trailDatabaseHelper.addPoints("Gribble Gap", latlngList)
     }
+
+    private fun setUpLauncher() {
+        this.qrcodeLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                val intent = it.data
+                if(intent != null) {
+                    val coordinates = intent.getStringExtra(QRCODE)
+                    Toast.makeText(this, "Coordinates: $coordinates", Toast.LENGTH_LONG).show()
+                }
+
+            }
+        }
+    }
+
 
     companion object {
         const val DATABASE_NAME = "DatabaseName"
