@@ -3,7 +3,6 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -19,10 +18,6 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 
 class TrailObserver : AppCompatActivity(),OnTouchListener {
@@ -40,47 +35,21 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trail_observer)
         trailArray = resources.getStringArray(R.array.name_of_trails)
-        updateFragment()
-        this.prevButton = this.findViewById(R.id.prev_button)
-        prevButton.setOnTouchListener(this)
-        this.nextButton = this.findViewById(R.id.next_button)
-        nextButton.setOnTouchListener(this)
         val bundle = intent.extras
         if(bundle != null) {
             this.trailName = bundle.getString(TRAIL_NAME)!!
             val tv:TextView = this.findViewById(R.id.trail_name)
             tv.text = this.trailName
+            val application = application as TrailApplication
+            trail = application.getTrailList()[trailArray.indexOf(trailName)]
+            updateFragment()
+            this.prevButton = this.findViewById(R.id.prev_button)
+            prevButton.setOnClickListener { getPoint(true) }
+            //prevButton.setOnTouchListener(this)
+            this.nextButton = this.findViewById(R.id.next_button)
+            nextButton.setOnClickListener { getPoint(false) }
+            //nextButton.setOnTouchListener(this)
         }
-    }
-
-    //Move to onCreate()?
-    //Change this to be more efficient
-    override fun onStart() {
-        super.onStart()
-        val reference = FirebaseDatabase.getInstance().getReference(FIREDATABASE_NAME)
-        reference.addValueEventListener(object:ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.v("num of children", "${snapshot.childrenCount}") //debugging
-                val trailList = ArrayList<Trail>()
-                for((cnt, i) in snapshot.children.withIndex()) {
-                    Log.v("num of children2", "${i.childrenCount}") //debugging
-                    val trail = Trail(trailArray[cnt])
-                    for(j in i.children) {
-                        val trailPathPoint = j.getValue(TrailPathPoint::class.java)
-                        trail.add(trailPathPoint?.lat!!, trailPathPoint.lng!!)
-                    }
-                    trailList.add(trail)
-                }
-                trail = trailList[trailArray.indexOf(trailName)]
-                Log.v("trail success", "Trail was successfully created")
-                recordPoints()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.v("error", "UH OH!")
-            }
-
-        })
     }
 
     private fun recordPoints() {
@@ -109,7 +78,10 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
     private fun updateFragment() {
         val fragment: SupportMapFragment = this.supportFragmentManager.findFragmentById(R.id.map2)
                 as SupportMapFragment
-        fragment.getMapAsync {this.map = it}
+        fragment.getMapAsync {
+            this.map = it
+            recordPoints()
+        }
     }
 
     private fun createCurrentMarker(lat:Double, lng:Double) {
@@ -137,12 +109,12 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
         when (v) {
             this.prevButton -> {
                 if(event?.action == MotionEvent.ACTION_BUTTON_PRESS) {
-                    getPoint(true)
+                    v.performClick()
                 }
             }
             this.nextButton -> {
                 if(event?.action == MotionEvent.ACTION_BUTTON_PRESS) {
-                    getPoint(false)
+                    v.performClick()
                 }
             }
             else -> {}

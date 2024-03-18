@@ -1,7 +1,13 @@
 package edu.wcu.cs.thomas_kay.gpskotlin
 
 import android.app.Application
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Deferred
 import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.cos
@@ -10,6 +16,9 @@ import kotlin.math.sin
 
 class TrailApplication() : Application() {
 
+    /** Contains references to the list of trails to be read in */
+    private lateinit var trailList: ArrayList<Trail>
+
     //Use this to store trail data types that can be accessed from
     //And load in the data from Firebase during the splashscreen
 
@@ -17,8 +26,34 @@ class TrailApplication() : Application() {
      * Used to read in and fill in data from the Firebase database. Use this function/method as a
      * background process.
      */
-    fun init() {
+    fun init():Boolean {
+        val trailArray = resources.getStringArray(R.array.name_of_trails)
+        val reference = FirebaseDatabase.getInstance().getReference(FIREDATABASE_NAME)
+        reference.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.v("num of children", "${snapshot.childrenCount}") //debugging
+                trailList = ArrayList()
+                for((cnt, i) in snapshot.children.withIndex()) {
+                    Log.v("num of children2", "${i.childrenCount}") //debugging
+                    val trail = Trail(trailArray[cnt])
+                    for(j in i.children) {
+                        val trailPathPoint = j.getValue(TrailPathPoint::class.java)
+                        trail.add(trailPathPoint?.lat!!, trailPathPoint.lng!!)
+                    }
+                    trailList.add(trail)
+                }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("error", "Error: ${error.message}")
+            }
+
+        })
+        return true
+    }
+
+    fun getTrailList():ArrayList<Trail> {
+        return this.trailList
     }
 
     //Move function to a different class

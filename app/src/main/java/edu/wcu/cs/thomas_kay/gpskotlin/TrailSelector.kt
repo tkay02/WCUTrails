@@ -42,9 +42,10 @@ class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListe
     }
 
     override fun trailItemWasClicked(text: String) {
-        val intent = Intent(this, TrailObserver::class.java)
+        val intent = Intent(this, TrailSelector::class.java)
         intent.putExtra(TRAIL_NAME, text)
-        startActivity(intent)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 }
 

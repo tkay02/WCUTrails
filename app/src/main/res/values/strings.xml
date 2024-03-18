@@ -14,10 +14,13 @@
 
     <string name="api_key">AIzaSyCOBNouc25OaJLalS_kpQQW0pqZ2WeRUUQ</string>
 
-    <!-- KEEP THIS STRING ARRAY IN ENGLISH IN ORDER TO BE REPRESENT PARTS IN THE DATABASE -->
+    <!-- KEEP THIS STRING ARRAY IN THIS ORDER TO REPRESENT PLACEMENT IN THE DATABASE -->
     <string-array name="name_of_trails">
         <item>Cullowhee-HHS Connector</item>
         <item>Gribble Gap</item>
+        <item>Test Run</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -27,12 +28,16 @@ import edu.wcu.cs.thomas_kay.gpskotlin.EntryScreen.Companion.DATABASE_NAME
 const val TIME_INTERVAL:Long = 5000
 const val MIN_METERS:Float = 8.0f
 const val ZOOM_IN = 18.0f
+const val QR = "QRCode"
+const val QRLAT = "QRLat"
+const val QRLNG = "QRLng"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationTextView:TextView
     private lateinit var map:GoogleMap
     private lateinit var locationPermissions:ActivityResultLauncher<Array<String>>
+    private lateinit var qrLauncher:ActivityResultLauncher<Intent>
     private var prevMarker: Marker? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
 
@@ -45,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         if(bundle != null) {
             databaseName = bundle.getString(DATABASE_NAME)
         }
+        val qrButton: Button = findViewById(R.id.qr_button)
+        qrButton.setOnClickListener { goToQRActivity() }
         this.setLaunchers()
         updateFragment()
         setReceiver()
@@ -56,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         val filter = IntentFilter()
         filter.addAction(ServiceGPS.GPS)
+        filter.addAction(QR_SUCCESS)
         registerReceiver(broadcastReceiver, filter)
     }
 
@@ -78,15 +86,32 @@ class MainActivity : AppCompatActivity() {
         this.broadcastReceiver = object:BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if(intent != null) {
-                    if(intent.action.equals(ServiceGPS.GPS)) {
-                        val bundle:Bundle? = intent.extras
-                        if(bundle != null) {
-                            val lat = bundle.getDouble("LAT")
-                            val long = bundle.getDouble("LONG")
-                            val coordinates = bundle.getString("COORDINATES",
-                                                         "Location cannot be found")
-                            updateMap(lat, long, coordinates)
+                    val bundle:Bundle? = intent.extras
+                    when (intent.action) {
+                        ServiceGPS.GPS -> {
+                            if(bundle != null) {
+                                val lat = bundle.getDouble("LAT")
+                                val long = bundle.getDouble("LONG")
+                                val coordinates = bundle.getString(
+                                    "COORDINATES",
+                                    "Location cannot be found"
+                                )
+                                updateMap(lat, long, coordinates)
+                            }
                         }
+                        QR_SUCCESS -> {
+                            if(bundle != null) {
+                                val success = bundle.getBoolean(QR_RESULT)
+                                val message = if(success) {
+                                    "User is within $RADIUS meters from QR location"
+                                } else {
+                                    "User is not within $RADIUS meters from QR location (CHEATER!)"
+                                }
+                                Toast.makeText(this@MainActivity, message,
+                                    Toast.LENGTH_LONG).show()
+                            }
+                        }
+                        else -> {}
                     }
                 }
             }
@@ -112,6 +137,25 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Need permissions to access location",
                         Toast.LENGTH_LONG).show()
                     finish()
+                }
+            }
+        }
+        qrLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if(it.resultCode == RESULT_OK) {
+                val intent = it.data
+                if(intent != null) {
+                    val coordinates = intent.getStringExtra(QRCODE)?.split(" ")!!
+                    try {
+                        val lat = coordinates[0].toDouble()
+                        val lng = coordinates[1].toDouble()
+                        doQRBroadcast(lat, lng)
+                    } catch (e:NumberFormatException) {
+                        Toast.makeText(this, "Incorrect type of QR code was used",
+                            Toast.LENGTH_LONG).show()
+                    } catch (e:ArrayIndexOutOfBoundsException) {
+                        Toast.makeText(this, "Incorrect type of QR code was used",
+                            Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -165,4 +209,18 @@ class MainActivity : AppCompatActivity() {
         this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
 
     }
+
+    private fun goToQRActivity() {
+        val intent = Intent(this, QRScanner::class.java)
+        this.qrLauncher.launch(intent)
+    }
+
+    private fun doQRBroadcast(lat: Double, lng: Double) {
+        val intent = Intent()
+        intent.action = QR
+        intent.putExtra(QRLAT, lat)
+        intent.putExtra(QRLNG, lng)
+        sendBroadcast(intent)
+    }
+
 }

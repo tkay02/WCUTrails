@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLng
 /**
  * Can possibly use this as a trail tracker for a user's personal use.
  */
-class PathDatabaseHelper(context: Context, databaseName: String) :
+class PathDatabaseHelper(context: Context, databaseName: String = "pathrecorder.db") :
     SQLiteOpenHelper(context, databaseName, null, 1) {
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -20,7 +20,9 @@ class PathDatabaseHelper(context: Context, databaseName: String) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
+        val query = "DROP TABLE IF EXISTS $TRAIL_TABLE;"
+        db!!.execSQL(query)
+        onCreate(db)
     }
 
     fun insert(location: Location, cnt:Int):Boolean {
