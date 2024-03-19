@@ -16,9 +16,11 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var button2: Button
     private lateinit var button3: Button
     private lateinit var button4: Button
+    private lateinit var button5: Button
     private lateinit var qrcodeLauncher: ActivityResultLauncher<Intent>
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var observeLauncher: ActivityResultLauncher<Intent>
+    private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,8 @@ class EntryScreen : AppCompatActivity() {
         button3.setOnClickListener {goToQRActivity()}
         button4 = findViewById(R.id.record_trail)
         button4.setOnClickListener {goToRecordActivity()}
+        button5 = findViewById(R.id.go_to_path_button)
+        button5.setOnClickListener {goToTrail()}
     }
 
     private fun goToLocationActivity() {
@@ -54,6 +58,11 @@ class EntryScreen : AppCompatActivity() {
     private fun goToRecordActivity() {
         val intent = Intent(this, RecordTrail::class.java)
         this.recordLauncher.launch(intent)
+    }
+
+    private fun goToTrail() {
+        intent = Intent(this, TrailSelector::class.java)
+        this.startTrailLauncher.launch(intent)
     }
 
     private fun setUpLaunchers() {
@@ -90,6 +99,19 @@ class EntryScreen : AppCompatActivity() {
                 if(intent != null) {
                     val trailName = intent.getStringExtra(TRAIL_NAME)
                     val newIntent = Intent(this, TrailObserver::class.java)
+                    newIntent.putExtra(TRAIL_NAME, trailName)
+                    startActivity(newIntent)
+                }
+            }
+        }
+        this.startTrailLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if(it.resultCode == RESULT_OK) {
+                val intent = it.data
+                if(intent != null) {
+                    val trailName = intent.getStringExtra(TRAIL_NAME)
+                    val newIntent = Intent(this, MainActivity::class.java)
                     newIntent.putExtra(TRAIL_NAME, trailName)
                     startActivity(newIntent)
                 }

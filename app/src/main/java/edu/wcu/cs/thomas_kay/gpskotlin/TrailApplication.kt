@@ -2,19 +2,20 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 
 import android.app.Application
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Deferred
-import kotlin.math.PI
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 
 
-class TrailApplication() : Application() {
+class TrailApplication : Application() {
 
     /** Contains references to the list of trails to be read in */
     private lateinit var trailList: ArrayList<Trail>
@@ -56,38 +57,36 @@ class TrailApplication() : Application() {
         return this.trailList
     }
 
-    //Move function to a different class
+    //Maybe move this to another class similar to DistanceCalc.kt
     /**
-     * Calculates the distance between two latitude/longitude coordinate points.
-     *
-     * @param coord1 Coordinate point one (the user's location).
-     * @param coord2 Coordinate point two (static distance location).
-     * @return The distance between two coordinate points in meters.
+     * Sketches a trail onto a map. A modular (reusable) function that could be applied to
+     * activities that contain a map.
      */
-    fun calculateDistance(coord1: LatLng, coord2: LatLng):Double {
-        //Make 180 and 6378100 as constants
-        //Convert to radians
-        val lat1 = coord1.latitude * (PI/180)
-        val lng1 = coord1.longitude * (PI/180)
-        val lat2 = coord2.latitude * (PI/180)
-        val lng2 = coord2.longitude * (PI/180)
-        return acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lng2-lng1)) * 6371000
-    }
-
-    //Move function to different class
-    /**
-     * Checks if the first coordinate point is within a radius of the second coordinate point.
-     *
-     * @param coord1 Coordinate point one (the user's location).
-     * @param coord2 Coordinate point two (static distance location).
-     * @param radius The radius of the second coordinate point in meters.
-     * @return True if the distance of the two coordinate points are within the radius; false
-     * otherwise. The distance is within the radius if the distance is less than or equal to the
-     * radius.
-     */
-    fun isNearPoint(coord1: LatLng, coord2: LatLng, radius: Double):Boolean {
-        val distanceBtwPoints = calculateDistance(coord1, coord2)
-        return distanceBtwPoints <= radius
+    fun recordPoints(trail:Trail, map:GoogleMap):LatLng? {
+        val latlngList = trail.iterate()
+        if(latlngList.size != 0) {
+            val origin = latlngList[0]
+            val destination = latlngList[latlngList.size - 1]
+            val path = PolylineOptions()
+            path.addAll(latlngList)
+            path.width(WIDTH)
+            path.color(ContextCompat.getColor(this, R.color.gps_color))
+            path.geodesic(true)
+            map.addPolyline(path)
+            map.addMarker(
+                MarkerOptions().position(origin).title(getString(
+                R.string.start_of_trail)))
+            map.addMarker(
+                MarkerOptions().position(destination).title(getString(
+                R.string.end_of_trail)))
+            val bounds = LatLngBounds.builder()
+                .include(origin)
+                .include(destination)
+                .build()
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING))
+            return origin
+        }
+        return null
     }
 
 

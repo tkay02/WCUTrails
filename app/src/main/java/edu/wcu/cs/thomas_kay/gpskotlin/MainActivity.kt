@@ -16,12 +16,16 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import edu.wcu.cs.thomas_kay.gpskotlin.EntryScreen.Companion.DATABASE_NAME
 
 //private constants
@@ -38,22 +42,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var map:GoogleMap
     private lateinit var locationPermissions:ActivityResultLauncher<Array<String>>
     private lateinit var qrLauncher:ActivityResultLauncher<Intent>
-    private var prevMarker: Marker? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
+    private var prevMarker: Marker? = null
+    private val trailQueue:ArrayDeque<LatLng> = ArrayDeque()
+    private var origin:LatLng? = null
+    private val polylineList = ArrayList<LatLng>()
+    private var polyline:Polyline? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         locationTextView = this.findViewById(R.id.location_text)
         var databaseName:String? = null
+        var trailName:String? = null
         val bundle:Bundle? = intent.extras
         if(bundle != null) {
             databaseName = bundle.getString(DATABASE_NAME)
+            trailName = bundle.getString(TRAIL_NAME)
         }
         val qrButton: Button = findViewById(R.id.qr_button)
         qrButton.setOnClickListener { goToQRActivity() }
         this.setLaunchers()
-        updateFragment()
+        updateFragment(trailName)
         setReceiver()
         setUpService(databaseName)
     }
@@ -179,10 +189,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFragment() {
+    private fun updateFragment(trailName:String?) {
         val fragment: SupportMapFragment = this.supportFragmentManager.findFragmentById(R.id.map)
                 as SupportMapFragment //Casting in Kotlin
-        fragment.getMapAsync {this.map = it}
+        fragment.getMapAsync {
+            this.map = it
+            if(trailName != null) {
+                val application = application as TrailApplication
+                val trailArray = resources.getStringArray(R.array.name_of_trails);
+                val trail = application.getTrailList()[trailArray.indexOf(trailName)]
+                trailQueue.addAll(trail.iterate())
+                origin = application.recordPoints(trail, this.map)
+            }
+        }
     }
 
     /** Example of Kotlin docs */
@@ -206,7 +225,28 @@ class MainActivity : AppCompatActivity() {
         this.prevMarker = this.map.addMarker(MarkerOptions().position(current).title(
             "Current Location"))
         //Displays user's current location on the map
-        this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
+        if(origin != null && !isNearPoint(current, origin!!, RADIUS) &&
+            trailQueue.contains(origin)) {
+                val bounds = LatLngBounds.builder()
+                    .include(current)
+                    .include(origin!!)
+                    .build()
+                this.map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING))
+        } else {
+            this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
+            if(!trailQueue.isEmpty() && isNearPoint(current, trailQueue.first(), RADIUS)) {
+                polylineList.add(trailQueue.removeFirst())
+                val completedPath = PolylineOptions()
+                completedPath.addAll(polylineList)
+                        .width(WIDTH)
+                        .color(ContextCompat.getColor(this,R.color.followed_trail_color))
+                        .geodesic(true)
+                if(polyline != null) {
+                    polyline!!.remove()
+                }
+                polyline = this.map.addPolyline(completedPath)
+            }
+        }
 
     }
 

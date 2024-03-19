@@ -29,6 +29,7 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
     private lateinit var trailArray:Array<String>
     private lateinit var prevButton:Button
     private lateinit var nextButton:Button
+    private lateinit var app: TrailApplication
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +41,8 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
             this.trailName = bundle.getString(TRAIL_NAME)!!
             val tv:TextView = this.findViewById(R.id.trail_name)
             tv.text = this.trailName
-            val application = application as TrailApplication
-            trail = application.getTrailList()[trailArray.indexOf(trailName)]
+            app = application as TrailApplication
+            trail = app.getTrailList()[trailArray.indexOf(trailName)]
             updateFragment()
             this.prevButton = this.findViewById(R.id.prev_button)
             prevButton.setOnClickListener { getPoint(true) }
@@ -52,35 +53,12 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
         }
     }
 
-    private fun recordPoints() {
-        val latlngList = trail.iterate()
-        if(latlngList.size != 0) {
-            val origin: LatLng = latlngList[0]
-            val destination: LatLng = latlngList[latlngList.size - 1]
-            val path = PolylineOptions()
-            path.addAll(latlngList)
-            path.width(WIDTH)
-            path.color(ContextCompat.getColor(this, R.color.gps_color))
-            path.geodesic(true)
-            map.addPolyline(path)
-            map.addMarker(MarkerOptions().position(origin).title(getString(
-                R.string.start_of_trail)))
-            map.addMarker(MarkerOptions().position(destination).title(getString(
-                R.string.end_of_trail)))
-            val bounds = LatLngBounds.builder()
-                .include(origin)
-                .include(destination)
-                .build()
-            map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING))
-        }
-    }
-
     private fun updateFragment() {
         val fragment: SupportMapFragment = this.supportFragmentManager.findFragmentById(R.id.map2)
                 as SupportMapFragment
         fragment.getMapAsync {
             this.map = it
-            recordPoints()
+            this.app.recordPoints(trail, map)
         }
     }
 
@@ -105,6 +83,7 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
         }
     }
 
+    //NEEDS REWORKING
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         when (v) {
             this.prevButton -> {

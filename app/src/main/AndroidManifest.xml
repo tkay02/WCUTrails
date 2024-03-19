@@ -23,15 +23,19 @@
         tools:targetApi="31">
         <activity
             android:name=".RecordTrail"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".QRScanner"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".TrailSelector"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".TrailObserver"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <service
@@ -49,9 +53,11 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".EntryScreen"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
