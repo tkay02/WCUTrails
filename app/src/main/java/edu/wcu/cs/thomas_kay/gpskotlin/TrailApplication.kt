@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
@@ -19,6 +20,7 @@ class TrailApplication : Application() {
 
     /** Contains references to the list of trails to be read in */
     private lateinit var trailList: ArrayList<Trail>
+    private lateinit var trailNames: ArrayList<String>
 
     //Use this to store trail data types that can be accessed from
     //And load in the data from Firebase during the splashscreen
@@ -28,18 +30,25 @@ class TrailApplication : Application() {
      * background process.
      */
     fun init():Boolean {
-        val trailArray = resources.getStringArray(R.array.name_of_trails)
         val reference = FirebaseDatabase.getInstance().getReference(FIREDATABASE_NAME)
         reference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.v("num of children", "${snapshot.childrenCount}") //debugging
                 trailList = ArrayList()
+                trailNames = ArrayList()
                 for((cnt, i) in snapshot.children.withIndex()) {
                     Log.v("num of children2", "${i.childrenCount}") //debugging
-                    val trail = Trail(trailArray[cnt])
+                    val trailName = i.getValue(Trail.TrailName::class.java)
+                    trailNames.add(trailName?.trailName!!)
+                    Log.v("Trail name testing", trailNames[cnt])
+                    val trail = Trail(trailNames[cnt])
                     for(j in i.children) {
-                        val trailPathPoint = j.getValue(TrailPathPoint::class.java)
-                        trail.add(trailPathPoint?.lat!!, trailPathPoint.lng!!)
+                        try {
+                            val trailPathPoint = j.getValue(TrailPathPoint::class.java)
+                            trail.add(trailPathPoint?.lat!!, trailPathPoint.lng!!)
+                        }catch (e:DatabaseException) {
+                            Log.v("Error", "Not a valid datatype")
+                        }
                     }
                     trailList.add(trail)
                 }
@@ -55,6 +64,10 @@ class TrailApplication : Application() {
 
     fun getTrailList():ArrayList<Trail> {
         return this.trailList
+    }
+
+    fun getTrailNames():ArrayList<String> {
+        return this.trailNames
     }
 
     //Maybe move this to another class similar to DistanceCalc.kt

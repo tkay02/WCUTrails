@@ -3,6 +3,7 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -20,22 +21,25 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolylineOptions
 
 
-class TrailObserver : AppCompatActivity(),OnTouchListener {
+class TrailObserver : AppCompatActivity() {
 
     private lateinit var trailName:String
     private lateinit var map:GoogleMap
     private lateinit var trail:Trail
     private var currentMarker:Marker? = null
-    private lateinit var trailArray:Array<String>
+    private lateinit var trailArray:ArrayList<String>
     private lateinit var prevButton:Button
     private lateinit var nextButton:Button
     private lateinit var app: TrailApplication
+    private lateinit var countDownPrev:CountDownTimer
+    private lateinit var countDownNext:CountDownTimer
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trail_observer)
-        trailArray = resources.getStringArray(R.array.name_of_trails)
+        val application = application as TrailApplication
+        trailArray = application.getTrailNames()
         val bundle = intent.extras
         if(bundle != null) {
             this.trailName = bundle.getString(TRAIL_NAME)!!
@@ -44,12 +48,7 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
             app = application as TrailApplication
             trail = app.getTrailList()[trailArray.indexOf(trailName)]
             updateFragment()
-            this.prevButton = this.findViewById(R.id.prev_button)
-            prevButton.setOnClickListener { getPoint(true) }
-            //prevButton.setOnTouchListener(this)
-            this.nextButton = this.findViewById(R.id.next_button)
-            nextButton.setOnClickListener { getPoint(false) }
-            //nextButton.setOnTouchListener(this)
+            setButtons()
         }
     }
 
@@ -83,22 +82,44 @@ class TrailObserver : AppCompatActivity(),OnTouchListener {
         }
     }
 
-    //NEEDS REWORKING
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        when (v) {
-            this.prevButton -> {
-                if(event?.action == MotionEvent.ACTION_BUTTON_PRESS) {
-                    v.performClick()
-                }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setButtons() {
+        setTimers()
+        this.prevButton = findViewById(R.id.prev_button)
+        prevButton.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> countDownPrev.start()
+                MotionEvent.ACTION_UP -> countDownPrev.cancel()
+                else -> {}
             }
-            this.nextButton -> {
-                if(event?.action == MotionEvent.ACTION_BUTTON_PRESS) {
-                    v.performClick()
-                }
-            }
-            else -> {}
+            true
         }
-        return true
+        this.nextButton = findViewById(R.id.next_button)
+        nextButton.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> countDownNext.start()
+                MotionEvent.ACTION_UP -> countDownNext.cancel()
+                else -> {}
+            }
+            true
+        }
+    }
+
+    private fun setTimers() {
+        this.countDownPrev = object:CountDownTimer(Long.MAX_VALUE, 500) {
+            override fun onTick(millisUntilFinished: Long) {
+                getPoint(true)
+            }
+
+            override fun onFinish() {}
+        }
+        this.countDownNext = object:CountDownTimer(Long.MAX_VALUE, 500) {
+            override fun onTick(millisUntilFinished: Long) {
+                getPoint(false)
+            }
+
+            override fun onFinish() {}
+        }
     }
 
 

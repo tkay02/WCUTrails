@@ -22,21 +22,27 @@
         android:theme="@style/Theme.GPSKotlin"
         tools:targetApi="31">
         <activity
-            android:name=".RecordTrail"
-            android:screenOrientation="portrait"
+            android:name=".Guest"
             android:exported="false" />
+        <activity
+            android:name=".Host"
+            android:exported="false" />
+        <activity
+            android:name=".RecordTrail"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".QRScanner"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TrailSelector"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TrailObserver"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".ServiceGPS"
@@ -54,11 +60,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EntryScreen"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

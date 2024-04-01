@@ -43,6 +43,11 @@ class TrailDatabaseHelper() {
         this.trailPointCounter++
     }
 
+    fun addName(trailName:String) {
+        val trailNameData = Trail.TrailName(trailName)
+        this.databaseReference.child(trailName).setValue(trailNameData)
+    }
+
     /**
      * Writes a collection of trail points to the database. Used to automate the writing of points
      * collected from the app.

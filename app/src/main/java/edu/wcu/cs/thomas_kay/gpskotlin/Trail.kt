@@ -153,6 +153,8 @@ class Trail(val trailName:String) {
         return latlngList
     }
 
+    data class TrailName(val trailName:String = "")
+
     /**
      * Inner class for Trail data structure. Stores an ID value that indicates which the order of
      * the trail points, depending on the length of the trail. Also stores information about the

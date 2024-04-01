@@ -6,7 +6,7 @@ import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
 
-const val RADIUS:Double = 5.0
+const val RADIUS:Double = 7.5
 const val EARTH_RADIUS:Int = 6371000
 const val TO_RADIANS = 180
 

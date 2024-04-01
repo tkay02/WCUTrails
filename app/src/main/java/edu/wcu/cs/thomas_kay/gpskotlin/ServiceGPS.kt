@@ -155,6 +155,7 @@ class ServiceGPS : Service() {
     private fun writeToFirebase() {
         val trailDatabaseHelper = TrailDatabaseHelper()
         val latlngList = databaseHelper?.getCoordinates()
+        trailDatabaseHelper.addName(trailName!!)
         trailDatabaseHelper.addPoints(trailName!!, latlngList!!)
     }
 

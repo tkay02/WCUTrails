@@ -19,9 +19,10 @@ class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListe
         //val search:SearchView = this.findViewById(R.id.search_bar)
         val recyclerView:RecyclerView = this.findViewById(R.id.recycler)
         recyclerView.setHasFixedSize(true)
-        val trailArray = resources.getStringArray(R.array.name_of_trails)
+        val application = application as TrailApplication
+        val trailArray = application.getTrailNames()
         trailArray.sort()
-        val adapter = TrailAdapter(this, trailArray, this)
+        val adapter = TrailAdapter(this, arrayListToArray(trailArray), this)
         recyclerView.adapter = adapter
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -46,6 +47,16 @@ class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListe
         intent.putExtra(TRAIL_NAME, text)
         setResult(RESULT_OK, intent)
         finish()
+    }
+
+    fun arrayListToArray(list: ArrayList<String>):Array<String> {
+        val array = Array(list.size) {""}
+        var i = 0
+        while(i < array.size) {
+            array[i] = list[i]
+            i++
+        }
+        return array
     }
 }
 
