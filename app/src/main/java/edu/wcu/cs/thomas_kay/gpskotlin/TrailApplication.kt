@@ -16,11 +16,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
+const val DELAY:Long = 5000;
 class TrailApplication : Application() {
 
     /** Contains references to the list of trails to be read in */
     private lateinit var trailList: ArrayList<Trail>
     private lateinit var trailNames: ArrayList<String>
+
+    var isStarting = true
 
     //Use this to store trail data types that can be accessed from
     //And load in the data from Firebase during the splashscreen

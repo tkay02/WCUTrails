@@ -5,20 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.PolylineOptions
 
 
 class TrailObserver : AppCompatActivity() {
@@ -45,7 +39,7 @@ class TrailObserver : AppCompatActivity() {
             this.trailName = bundle.getString(TRAIL_NAME)!!
             val tv:TextView = this.findViewById(R.id.trail_name)
             tv.text = this.trailName
-            app = application as TrailApplication
+            app = application
             trail = app.getTrailList()[trailArray.indexOf(trailName)]
             updateFragment()
             setButtons()

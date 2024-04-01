@@ -3,10 +3,14 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 const val QRCODE:String = "QRCODE"
 
@@ -23,9 +27,15 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_screen)
         val application = this.application as TrailApplication
+        splashScreen.setKeepOnScreenCondition{application.isStarting}
+        val handler = Handler(Looper.getMainLooper())
+        var delay:Long = 0
+        if(application.isStarting) delay = DELAY
+        handler.postDelayed({application.isStarting = false}, delay)
         application.init() //Do this in splashscreen
         button1 = findViewById(R.id.locate_button)
         button1.setOnClickListener {goToLocationActivity()}
@@ -47,7 +57,7 @@ class EntryScreen : AppCompatActivity() {
 
     private fun goToDemoActivity() {
         intent = Intent(this, TrailSelector::class.java)
-        this.observeLauncher.launch(intent)
+        startActivity(intent)
     }
 
     private fun goToQRActivity() {
@@ -62,6 +72,7 @@ class EntryScreen : AppCompatActivity() {
 
     private fun goToTrail() {
         intent = Intent(this, TrailSelector::class.java)
+        intent.putExtra(RESULT_ACTIVITY, true)
         this.startTrailLauncher.launch(intent)
     }
 

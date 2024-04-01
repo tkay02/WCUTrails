@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var locationTextView:TextView
     private lateinit var map:GoogleMap
+    private lateinit var timer:TimerFragment
     private lateinit var locationPermissions:ActivityResultLauncher<Array<String>>
     private lateinit var qrLauncher:ActivityResultLauncher<Intent>
     private lateinit var broadcastReceiver: BroadcastReceiver
@@ -202,6 +203,8 @@ class MainActivity : AppCompatActivity() {
                 origin = application.recordPoints(trail, this.map)
             }
         }
+        this.timer = this.supportFragmentManager.findFragmentById(R.id.timer) as TimerFragment
+        this.timer.setTimer()
     }
 
     /** Example of Kotlin docs */

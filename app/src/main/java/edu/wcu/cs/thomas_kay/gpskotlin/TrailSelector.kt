@@ -10,11 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 const val TRAIL_NAME:String = "TrailName"
+const val RESULT_ACTIVITY:String = "ForResult"
 
 class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListener {
+
+    var isActivityForResult = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trail_selector)
+        val bundle = intent.extras
+        if(bundle != null) {
+            isActivityForResult = bundle.getBoolean(RESULT_ACTIVITY)
+        }
 
         //val search:SearchView = this.findViewById(R.id.search_bar)
         val recyclerView:RecyclerView = this.findViewById(R.id.recycler)
@@ -43,10 +51,16 @@ class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListe
     }
 
     override fun trailItemWasClicked(text: String) {
-        val intent = Intent(this, TrailSelector::class.java)
-        intent.putExtra(TRAIL_NAME, text)
-        setResult(RESULT_OK, intent)
-        finish()
+        if(isActivityForResult) {
+            val intent = Intent(this, TrailSelector::class.java)
+            intent.putExtra(TRAIL_NAME, text)
+            setResult(RESULT_OK, intent)
+            finish()
+        } else {
+            val intent = Intent(this, TrailObserver::class.java)
+            intent.putExtra(TRAIL_NAME, text)
+            startActivity(intent)
+        }
     }
 
     fun arrayListToArray(list: ArrayList<String>):Array<String> {
