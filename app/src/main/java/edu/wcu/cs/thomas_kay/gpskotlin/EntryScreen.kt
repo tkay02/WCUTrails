@@ -25,6 +25,7 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var observeLauncher: ActivityResultLauncher<Intent>
     private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
+    private lateinit var scoreLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -124,6 +125,19 @@ class EntryScreen : AppCompatActivity() {
                     val trailName = intent.getStringExtra(TRAIL_NAME)
                     val newIntent = Intent(this, MainActivity::class.java)
                     newIntent.putExtra(TRAIL_NAME, trailName)
+                    this.scoreLauncher.launch(newIntent)
+                }
+            }
+        }
+        this.scoreLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if(it.resultCode == RESULT_OK) {
+                val intent = it.data
+                if(intent != null) {
+                    val score = intent.getIntArrayExtra(SCORE)
+                    val newIntent = Intent(this, Score::class.java)
+                    newIntent.putExtra(SCORE, score)
                     startActivity(newIntent)
                 }
             }

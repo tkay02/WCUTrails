@@ -22,6 +22,9 @@
         android:theme="@style/Theme.GPSKotlin"
         tools:targetApi="31">
         <activity
+            android:name=".Score"
+            android:exported="false" />
+        <activity
             android:name=".Guest"
             android:exported="false" />
         <activity

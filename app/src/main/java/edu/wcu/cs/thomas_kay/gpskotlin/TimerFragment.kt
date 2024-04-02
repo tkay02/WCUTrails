@@ -3,6 +3,7 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class TimerFragment : Fragment() {
     private lateinit var textBox:TextView
     /** The counter for the amount of seconds */
     private var seconds:Long = 0 //For counter
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -38,8 +40,8 @@ class TimerFragment : Fragment() {
         startTimer()
     }
 
-    fun startTimer() {
-        val handler = Handler(Looper.getMainLooper())
+    //Change this to a countdown timer
+    private fun startTimer() {
         val runnable = object:Runnable {
             override fun run() {
                 val sec = seconds % SIXTY
@@ -51,6 +53,7 @@ class TimerFragment : Fragment() {
                 if(seconds < MAX_SECONDS) {
                     seconds++
                 }
+                Log.v("Count", "${getSeconds()}")
                 handler.postDelayed(this, SECOND)
             }
         }
@@ -67,6 +70,10 @@ class TimerFragment : Fragment() {
             }
             return timeString
         }
+    }
+
+    fun stopCount() {
+        this.handler.removeCallbacksAndMessages(null)
     }
 
     fun getSeconds():Int {

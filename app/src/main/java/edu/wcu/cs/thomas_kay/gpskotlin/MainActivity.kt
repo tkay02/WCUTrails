@@ -35,12 +35,14 @@ const val ZOOM_IN = 18.0f
 const val QR = "QRCode"
 const val QRLAT = "QRLat"
 const val QRLNG = "QRLng"
+const val SCORE = "Score"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationTextView:TextView
     private lateinit var map:GoogleMap
     private lateinit var timer:TimerFragment
+    private var timerHasStarted = false
     private lateinit var locationPermissions:ActivityResultLauncher<Array<String>>
     private lateinit var qrLauncher:ActivityResultLauncher<Intent>
     private lateinit var broadcastReceiver: BroadcastReceiver
@@ -91,6 +93,9 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         val intent = Intent(this, ServiceGPS::class.java)
         stopService(intent)
+        if(timerHasStarted) {
+            this.timer.stopCount()
+        }
     }
 
     private fun setReceiver() {
@@ -204,7 +209,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         this.timer = this.supportFragmentManager.findFragmentById(R.id.timer) as TimerFragment
-        this.timer.setTimer()
     }
 
     /** Example of Kotlin docs */
@@ -237,6 +241,10 @@ class MainActivity : AppCompatActivity() {
                 this.map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING))
         } else {
             this.map.animateCamera(CameraUpdateFactory.newLatLngZoom(current, ZOOM_IN))
+            if(!timerHasStarted && origin != null) {
+                this.timer.setTimer()
+                timerHasStarted = true
+            }
             if(!trailQueue.isEmpty() && isNearPoint(current, trailQueue.first(), RADIUS)) {
                 polylineList.add(trailQueue.removeFirst())
                 val completedPath = PolylineOptions()
@@ -248,6 +256,12 @@ class MainActivity : AppCompatActivity() {
                     polyline!!.remove()
                 }
                 polyline = this.map.addPolyline(completedPath)
+            }
+            if(trailQueue.isEmpty() && origin != null) {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra(SCORE, this.timer.getSeconds())
+                setResult(RESULT_OK, intent)
+                finish()
             }
         }
 
