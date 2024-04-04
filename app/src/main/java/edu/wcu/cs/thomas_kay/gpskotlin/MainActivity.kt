@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import edu.wcu.cs.thomas_kay.gpskotlin.EntryScreen.Companion.DATABASE_NAME
+import java.io.File
+import java.io.OutputStream
 
 //private constants
 const val TIME_INTERVAL:Long = 5000

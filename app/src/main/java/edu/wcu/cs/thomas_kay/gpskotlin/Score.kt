@@ -21,19 +21,20 @@ class Score : AppCompatActivity() {
         text = "$text $score"
         txt1.text = text
         when {
-            score >= 10000 -> {txt2.text = "Fastest person in the world!"}
-            score >= 8000 -> {txt2.text = "Excellent job!"}
-            score >= 6000 -> {txt2.text = "Nice running!"}
-            score >= 4000 -> {txt2.text = "A little more practice can do the trick"}
-            else -> {txt2.text = "Better luck next time"}
+            score >= Rating.AMAZING.score-> {txt2.text = Rating.AMAZING.scoreMessage}
+            score >= 8000 -> {txt2.text = Rating.GREAT.scoreMessage}
+            score >= 6000 -> {txt2.text = Rating.GOOD.scoreMessage}
+            score >= 4000 -> {txt2.text = Rating.OKAY.scoreMessage}
+            else -> {txt2.text = Rating.WORST.scoreMessage}
         }
     }
 }
 
-enum class Rating(score_value:Int, score_message:String) {
+enum class Rating(val score:Int, val scoreMessage:String) {
     AMAZING(10000, "Fastest person in the world!"),
     GREAT(8000, "Excellent job!"),
     GOOD(6000, "Nice running!"),
-    OKAY(4000, "A little more practice can do the trick")
+    OKAY(4000, "A little more practice can do the trick"),
+    WORST(1, "Better luck next time")
 
 }

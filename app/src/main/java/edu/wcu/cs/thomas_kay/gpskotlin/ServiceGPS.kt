@@ -171,6 +171,7 @@ class ServiceGPS : Service() {
             writeToFirebase()
             Log.v("testing", "Wrote successfully to Firebase")
         }
+        this.fusedLocationProviderClient.removeLocationUpdates(this.locationCallback)
     }
 
     override fun onBind(intent: Intent): IBinder {
