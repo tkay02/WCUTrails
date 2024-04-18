@@ -5,6 +5,12 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="map_button">Press to go to map</string>
 
+    <string name="view_trails">View Trails</string>
+    <string name="record">Record Trail</string>
+    <string name="go_to_trail">Go To Trail</string>
+
+    <string name="qr_example">Example: WCUTrails 0.0 0.0</string>
+
     <string name="end_of_trail">End of Trail</string>
     <string name="start_of_trail">Start of Trail</string>
     <string name="current_point">Current Spot on Trail</string>

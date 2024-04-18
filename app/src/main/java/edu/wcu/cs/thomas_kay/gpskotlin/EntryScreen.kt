@@ -22,7 +22,6 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var button3: Button
     private lateinit var button4: Button
     private lateinit var button5: Button
-    private lateinit var qrcodeLauncher: ActivityResultLauncher<Intent>
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var observeLauncher: ActivityResultLauncher<Intent>
     private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
@@ -63,8 +62,8 @@ class EntryScreen : AppCompatActivity() {
     }
 
     private fun goToQRActivity() {
-        val intent = Intent(this, QRScanner::class.java)
-        this.qrcodeLauncher.launch(intent)
+        val intent = Intent(this, QRGenerator::class.java)
+        startActivity(intent)
     }
 
     private fun goToRecordActivity() {
@@ -79,18 +78,6 @@ class EntryScreen : AppCompatActivity() {
     }
 
     private fun setUpLaunchers() {
-        this.qrcodeLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == RESULT_OK) {
-                val intent = it.data
-                if(intent != null) {
-                    val coordinates = intent.getStringExtra(QRCODE)
-                    Toast.makeText(this, "Coordinates: $coordinates", Toast.LENGTH_LONG).show()
-                }
-
-            }
-        }
         this.recordLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {

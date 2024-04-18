@@ -3,9 +3,11 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.AutoFocusMode
@@ -13,6 +15,7 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.CodeScannerView
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
+import com.budiyev.android.codescanner.ScanMode
 
 /*
  * MIT License
@@ -43,6 +46,7 @@ const val RESULT_CODE:Int = 101
 class QRScanner : AppCompatActivity() {
 
     private lateinit var scanner: CodeScanner
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrscanner)
@@ -60,20 +64,34 @@ class QRScanner : AppCompatActivity() {
         super.onPause()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun codeScanner(codeScannerView: CodeScannerView) {
         this.scanner = CodeScanner(this, codeScannerView)
         this.scanner.camera = CodeScanner.CAMERA_BACK
         this.scanner.formats = CodeScanner.ALL_FORMATS
         this.scanner.autoFocusMode = AutoFocusMode.SAFE
+        this.scanner.scanMode = ScanMode.CONTINUOUS
         this.scanner.isAutoFocusEnabled = true
         this.scanner.isFlashEnabled = false
         this.scanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                val intent = Intent(this, QRScanner::class.java)
-                intent.putExtra(QRCODE, it.text)
-                // include? scanner.releaseResources()
-                setResult(RESULT_OK, intent)
-                finish()
+                try {
+                    val decrypted = decodeQR(it.text)
+                    val decryptedList = decrypted.split(" ")
+                    if(decryptedList.size != 3 || decryptedList[0] != TITLE) {
+                        Toast.makeText(this, "Incorrect QR code was scanned",
+                            Toast.LENGTH_LONG).show()
+                    } else {
+                        val intent = Intent(this, QRScanner::class.java)
+                        // include scanner.releaseResources()?
+                        intent.putExtra(QRCODE, decrypted)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
+                } catch(e:IllegalArgumentException) {
+                        Toast.makeText(this, "Incorrect QR code was scanned",
+                            Toast.LENGTH_LONG).show()
+                }
             }
         }
         this.scanner.errorCallback = ErrorCallback {

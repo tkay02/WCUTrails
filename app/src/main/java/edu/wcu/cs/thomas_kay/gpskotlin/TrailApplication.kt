@@ -22,7 +22,6 @@ class TrailApplication : Application() {
     /** Contains references to the list of trails to be read in */
     private lateinit var trailList: ArrayList<Trail>
     private lateinit var trailNames: ArrayList<String>
-
     var isStarting = true
 
     //Use this to store trail data types that can be accessed from
