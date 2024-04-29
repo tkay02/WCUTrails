@@ -8,9 +8,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Switch this to MediaStore since WRITE_EXTERNAL_STORAGE is depreciated -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- Switch this to MediaStore since WRITE_EXTERNAL_STORAGE is depreciated -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".TrailApplication"
@@ -23,6 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GPSKotlin"
         tools:targetApi="31">
+        <activity
+            android:name=".SignUp"
+            android:exported="false" />
+        <activity
+            android:name=".StartingScreen"
+            android:exported="false" />
         <activity
             android:name=".QRGenerator"
             android:exported="false" />

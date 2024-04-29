@@ -79,4 +79,15 @@
         android:layout_marginBottom="40dp">
     </Button>
 
+    <Button
+        android:id="@+id/intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/locate_button"
+        android:text="Test Starting Screen"
+        android:textSize="25sp">
+    </Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
