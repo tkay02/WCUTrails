@@ -22,23 +22,22 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var button3: Button
     private lateinit var button4: Button
     private lateinit var button5: Button
-    private lateinit var buttonStart: Button
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var observeLauncher: ActivityResultLauncher<Intent>
     private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
     private lateinit var scoreLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        //val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_screen)
-        val application = this.application as TrailApplication
-        splashScreen.setKeepOnScreenCondition{application.isStarting}
-        val handler = Handler(Looper.getMainLooper())
-        var delay:Long = 0
-        if(application.isStarting) delay = DELAY
-        handler.postDelayed({application.isStarting = false}, delay)
-        application.init() //Do this in splashscreen
+        //val application = this.application as TrailApplication
+        //splashScreen.setKeepOnScreenCondition{application.isStarting}
+        //val handler = Handler(Looper.getMainLooper())
+        //var delay:Long = 0
+        //if(application.isStarting) delay = DELAY
+        //handler.postDelayed({application.isStarting = false}, delay)
+        //application.init() //Do this in splashscreen
         button1 = findViewById(R.id.locate_button)
         button1.setOnClickListener {goToLocationActivity()}
         button2 = findViewById(R.id.demo_button)
@@ -50,11 +49,6 @@ class EntryScreen : AppCompatActivity() {
         button4.setOnClickListener {goToRecordActivity()}
         button5 = findViewById(R.id.go_to_path_button)
         button5.setOnClickListener {goToTrail()}
-        buttonStart = findViewById(R.id.intro)
-        buttonStart.setOnClickListener {
-            val intent = Intent(this, StartingScreen::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun goToLocationActivity() {

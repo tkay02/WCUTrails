@@ -24,7 +24,7 @@ class LogIn : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
-        userEditText = this.findViewById(R.id.username_edit)
+        userEditText = this.findViewById(R.id.username_edittext)
         passwordEditText = this.findViewById(R.id.password_edittext)
         getData()
         val button:Button = this.findViewById(R.id.submit)
@@ -66,6 +66,8 @@ class LogIn : AppCompatActivity() {
                 Toast.makeText(this, "User has been successfully authenticated",
                     Toast.LENGTH_LONG).show()
                 //Insert code for saving settings
+                val application = application as TrailApplication
+                application.currentUser = userEditText.text.toString()
                 val intent = Intent(this, LogIn::class.java)
                 setResult(RESULT_OK, intent)
                 finish()

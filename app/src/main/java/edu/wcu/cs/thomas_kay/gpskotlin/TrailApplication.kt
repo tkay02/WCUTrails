@@ -1,6 +1,7 @@
 package edu.wcu.cs.thomas_kay.gpskotlin
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,6 +24,8 @@ class TrailApplication : Application() {
     private lateinit var trailList: ArrayList<Trail>
     private lateinit var trailNames: ArrayList<String>
     var isStarting = true
+    private lateinit var settings: SharedPreferences
+    var currentUser:String? = null
 
     //Use this to store trail data types that can be accessed from
     //And load in the data from Firebase during the splashscreen
@@ -103,7 +106,5 @@ class TrailApplication : Application() {
         }
         return null
     }
-
-
 
 }
