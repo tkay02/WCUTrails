@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".EntryScreen">
 
-    <ImageView
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,9 +14,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="15dp"
-        android:src="@drawable/wcu_trails_logo"
-        android:padding="18dp">
-    </ImageView>
+        android:padding="18dp"
+        android:textAlignment="center"
+        android:text="@string/menu_title"
+        android:textSize="36dp">
+    </TextView>
 
     <Button
         android:id="@+id/locate_button"

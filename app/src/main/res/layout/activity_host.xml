@@ -41,20 +41,27 @@
             android:padding="5dp">
         </TextView>
         
-        <TextView
-            android:id="@+id/code"
+        <fragment
+            android:id="@+id/host_code"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textAlignment="viewStart"
-            android:textSize="30sp"
-            android:padding="5dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:text="">
-        </TextView>
+            android:name="edu.wcu.cs.thomas_kay.gpskotlin.HostCode">
+        </fragment>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <Button
+        android:id="@+id/switch_frags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear"
+        android:layout_marginTop="10dp"
+        android:text="Switch To QRCode"
+        android:textSize="20sp">
+    </Button>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"

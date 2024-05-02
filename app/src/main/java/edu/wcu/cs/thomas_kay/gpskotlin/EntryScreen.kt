@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,16 +29,11 @@ class EntryScreen : AppCompatActivity() {
     private lateinit var scoreLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_screen)
-        //val application = this.application as TrailApplication
-        //splashScreen.setKeepOnScreenCondition{application.isStarting}
-        //val handler = Handler(Looper.getMainLooper())
-        //var delay:Long = 0
-        //if(application.isStarting) delay = DELAY
-        //handler.postDelayed({application.isStarting = false}, delay)
-        //application.init() //Do this in splashscreen
+        val application = application as TrailApplication
+        val title:TextView = findViewById(R.id.title)
+        title.text = "Welcome, \n${application.currentUser}"
         button1 = findViewById(R.id.locate_button)
         button1.setOnClickListener {goToLocationActivity()}
         button2 = findViewById(R.id.demo_button)
