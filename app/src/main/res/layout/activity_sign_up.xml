@@ -109,4 +109,17 @@
         android:layout_marginBottom="45dp">
     </Button>
 
+    <!-- Use temporary to create admins/maintainers
+    <Button
+        android:id="@+id/create_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/submit"
+        android:text="Create Admin"
+        android:textSize="24dp">
+    </Button>
+    Cancel the above to prevent users from becoming admins -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

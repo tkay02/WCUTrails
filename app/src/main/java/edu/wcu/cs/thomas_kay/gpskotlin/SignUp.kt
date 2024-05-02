@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 const val FIREBASE_USER = "User"
+const val FIREBASE_ADMIN = "Admin"
 const val MIN_PASSWORD_LENGTH = 8
 class SignUp : AppCompatActivity() {
 
@@ -31,6 +32,10 @@ class SignUp : AppCompatActivity() {
         password1EditText = this.findViewById(R.id.password_one_edit)
         password2EditText = this.findViewById(R.id.password_two_edit)
         submit.setOnClickListener { createAccount() }
+        // Comment this out
+        //val admin:Button = this.findViewById(R.id.create_admin)
+        // Comment this one out as well
+        //admin.setOnClickListener { createAdmin() }
     }
 
     private fun hasNoSpaces(text:String):Boolean {
@@ -88,6 +93,22 @@ class SignUp : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(this, "The two passwords do not match", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    // Only used for creating admins
+    private fun createAdmin() {
+        val adminReference = FirebaseDatabase.getInstance().getReference(FIREBASE_ADMIN)
+        if(usernameCheck() && passwordCheck()) {
+            val password1 = password1EditText.text.toString()
+            val password2 = password2EditText.text.toString()
+            if(password1 == password2) {
+                val username = usernameEditText.text.toString()
+                val salt = adminReference.push().key!!
+                val finalPassword = securePassword(salt + password1)
+                val admin = User(username, finalPassword)
+                adminReference.child(salt).setValue(admin)
             }
         }
     }

@@ -12,11 +12,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+const val ADMIN:String = "Admin"
+
 class LogIn : AppCompatActivity() {
 
     private lateinit var userEditText:EditText
     private lateinit var passwordEditText:EditText
     private val reference = FirebaseDatabase.getInstance().getReference(FIREBASE_USER)
+    private val adminReference = FirebaseDatabase.getInstance().getReference(FIREBASE_ADMIN)
+    private lateinit var adminNames:ArrayList<String>
+    private lateinit var adminPasswords:ArrayList<String>
+    private lateinit var adminSalts:ArrayList<String>
     private lateinit var userNames:ArrayList<String>
     private lateinit var passwords:ArrayList<String>
     private lateinit var salts:ArrayList<String>
@@ -47,30 +53,58 @@ class LogIn : AppCompatActivity() {
                     Log.v("debugging", "Password: ${user.password}")
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
-                Log.v("error", "$error")
+                Log.v("error", error.message)
             }
-
+        })
+        adminReference.addValueEventListener(object:ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                adminNames = ArrayList()
+                adminPasswords = ArrayList()
+                adminSalts = ArrayList()
+                for(i in snapshot.children) {
+                    adminSalts.add(i.key!!)
+                    Log.v("debugging", "Admin Salt: ${i.key}")
+                    val admin = i.getValue(User::class.java)!!
+                    adminNames.add(admin.username)
+                    adminPasswords.add(admin.password)
+                    Log.v("debugging", "Admin Username: ${admin.username}")
+                    Log.v("debugging", "Admin Password: ${admin.password}")
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("error", error.message)
+            }
         })
     }
 
     private fun authenticateUser() {
-        val index = authenticateUsername()
-        if(index == -1) {
-            Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
+        val application = application as TrailApplication
+        if(isAnAdmin()) {
+            val intent = Intent(this, LogIn::class.java)
+            intent.putExtra(ADMIN, true)
+            application.currentUser = userEditText.text.toString()
+            setResult(RESULT_OK, intent)
+            finish()
         } else {
-            if(!authenticatePassword(index)) {
+            val index = authenticateUsername()
+            if (index == -1) {
                 Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this, "User has been successfully authenticated",
-                    Toast.LENGTH_LONG).show()
-                //Insert code for saving settings
-                val application = application as TrailApplication
-                application.currentUser = userEditText.text.toString()
-                val intent = Intent(this, LogIn::class.java)
-                setResult(RESULT_OK, intent)
-                finish()
+                if (!authenticatePassword(index)) {
+                    Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        this, "User has been successfully authenticated",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    //Insert code for saving settings
+                    application.currentUser = userEditText.text.toString()
+                    val intent = Intent(this, LogIn::class.java)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
             }
         }
     }
@@ -88,5 +122,21 @@ class LogIn : AppCompatActivity() {
         Log.v("debugging", "Salt: $salt")
         val userPassword = securePassword(salt + password)
         return userPassword == securePassword
+    }
+
+    private fun isAnAdmin():Boolean {
+        val username = userEditText.text.toString().trim()
+        if(!adminNames.contains(username)) {
+            return false
+        }
+        val adminIndex = adminNames.indexOf(username)
+        val password = passwordEditText.text.toString().trim()
+        val securePassword = adminPasswords[adminIndex]
+        val salt = adminSalts[adminIndex]
+        val adminPassword = securePassword(salt + password)
+        if(securePassword != adminPassword) {
+            return false
+        }
+        return true
     }
 }

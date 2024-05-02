@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,6 +49,15 @@ class StartingScreen : AppCompatActivity() {
         logInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if(it.resultCode == RESULT_OK) {
                 val intent = Intent(this, EntryScreen::class.java)
+                val prevIntent = it.data
+                if(prevIntent != null) {
+                    val prevExtras = prevIntent.extras
+                    if (prevExtras != null) {
+                        val isAdmin = prevExtras.getBoolean(ADMIN)
+                        Log.v("debugging", "You are an admin")
+                        intent.putExtra(ADMIN, isAdmin)
+                    }
+                }
                 startActivity(intent)
             }
         }
