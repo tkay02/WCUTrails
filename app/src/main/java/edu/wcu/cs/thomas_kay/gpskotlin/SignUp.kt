@@ -21,7 +21,9 @@ class SignUp : AppCompatActivity() {
     private lateinit var password1EditText: EditText
     private lateinit var password2EditText: EditText
     private val reference = FirebaseDatabase.getInstance().getReference(FIREBASE_USER)
+    private val adminReference = FirebaseDatabase.getInstance().getReference(FIREBASE_ADMIN)
     private lateinit var usernames: ArrayList<String>
+    private lateinit var adminNames: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,17 @@ class SignUp : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 Log.v("error", "$error")
             }
-
+        })
+        this.adminReference.addValueEventListener(object:ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                adminNames = ArrayList()
+                for(i in snapshot.children) {
+                    adminNames.add(i.getValue(User::class.java)!!.username)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("error", "$error")
+            }
         })
     }
 
@@ -121,6 +133,9 @@ class SignUp : AppCompatActivity() {
                 Toast.makeText(this, "Username cannot be nothing", Toast.LENGTH_LONG).show()
             }
             usernames.contains(username) -> {
+                Toast.makeText(this, "Username has already been chosen", Toast.LENGTH_LONG).show()
+            }
+            adminNames.contains(username) -> {
                 Toast.makeText(this, "Username has already been chosen", Toast.LENGTH_LONG).show()
             }
             !hasNoSpaces(username) -> {
