@@ -18,11 +18,6 @@ const val QRCODE:String = "QRCODE"
 
 class EntryScreen : AppCompatActivity() {
 
-    private lateinit var button1: Button
-    private lateinit var button2: Button
-    private lateinit var button3: Button
-    private lateinit var button4: Button
-    private lateinit var button5: Button
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var observeLauncher: ActivityResultLauncher<Intent>
     private lateinit var startTrailLauncher: ActivityResultLauncher<Intent>
@@ -34,16 +29,16 @@ class EntryScreen : AppCompatActivity() {
         val application = application as TrailApplication
         val title:TextView = findViewById(R.id.title)
         title.text = "Welcome, \n${application.currentUser}"
-        button1 = findViewById(R.id.locate_button)
+        val button1:Button = findViewById(R.id.locate_button)
         button1.setOnClickListener {goToLocationActivity()}
-        button2 = findViewById(R.id.demo_button)
+        val button2:Button = findViewById(R.id.demo_button)
         button2.setOnClickListener {goToDemoActivity()}
-        button3 = findViewById(R.id.qr_code_button)
+        val button3:Button = findViewById(R.id.qr_code_button)
         setUpLaunchers()
         button3.setOnClickListener {goToQRActivity()}
-        button4 = findViewById(R.id.record_trail)
+        val button4:Button = findViewById(R.id.record_trail)
         button4.setOnClickListener {goToRecordActivity()}
-        button5 = findViewById(R.id.go_to_path_button)
+        val button5:Button = findViewById(R.id.go_to_path_button)
         button5.setOnClickListener {goToTrail()}
     }
 

@@ -69,9 +69,9 @@ class TrailDatabaseHelper() {
  * Data object used to collect trail point read from the database. Has an empty constructor so that
  * it can be read from the database with no issues.
  *
- * @param idNum The id of the trail point in regard to the order of the trail (starting from 1 to
+ * @property idNum The id of the trail point in regard to the order of the trail (starting from 1 to
  * the size of the trail).
- * @param lat The latitude coordinate.
- * @param lng The longitude coordinate.
+ * @property lat The latitude coordinate.
+ * @property lng The longitude coordinate.
  */
 data class TrailPathPoint(val idNum:Int = 0, val lat:Double? = null, val lng:Double? = null)

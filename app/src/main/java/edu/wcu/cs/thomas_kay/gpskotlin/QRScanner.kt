@@ -41,32 +41,59 @@ import com.budiyev.android.codescanner.ScanMode
  * SOFTWARE.
  */
 
+/**
+ * @author Thomas Kay
+ * @version 5/9/2024
+ *
+ * Activity to scan in a QR code.
+ */
+
+/** Result code for camera permission */
 const val RESULT_CODE:Int = 101
 
 class QRScanner : AppCompatActivity() {
 
+    /** Scanner to use for reading QR code data */
     private lateinit var scanner: CodeScanner
+
+    /**
+     * Sets up activity, checks camera permission, and sets up code scanner find.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrscanner)
         checkPermission()
-        codeScanner(findViewById<CodeScannerView>(R.id.code_scanner))
+        codeScanner(findViewById(R.id.code_scanner))
     }
 
+    /**
+     * Starts preview of code scanner when activity is in the foreground.
+     */
     override fun onResume() {
         super.onResume()
         this.scanner.startPreview()
     }
 
+    /**
+     * Releases resources of code scanner when activity is not in the foreground.
+     */
     override fun onPause() {
         this.scanner.releaseResources()
         super.onPause()
     }
 
+    /**
+     * Sets up the code scanner to be used for the activity.
+     *
+     * Uses observator pattern when a successful QR code is read in.
+     *
+     * @param codeScannerView The view that contains info for the code scanner class.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun codeScanner(codeScannerView: CodeScannerView) {
         this.scanner = CodeScanner(this, codeScannerView)
+        // Sets up the code scanner in regards to its settings
         this.scanner.camera = CodeScanner.CAMERA_BACK
         this.scanner.formats = CodeScanner.ALL_FORMATS
         this.scanner.autoFocusMode = AutoFocusMode.SAFE
@@ -75,6 +102,8 @@ class QRScanner : AppCompatActivity() {
         this.scanner.isFlashEnabled = false
         this.scanner.decodeCallback = DecodeCallback {
             runOnUiThread {
+                // If data is successfully decrypted and valid, passes data into an intent and exits
+                // out of activity
                 try {
                     val decrypted = decodeQR(it.text)
                     val decryptedList = decrypted.split(" ")
@@ -104,13 +133,22 @@ class QRScanner : AppCompatActivity() {
         }
     }
 
+    /**
+     * Checks if the user's camera permissions has been granted to the application.
+     */
     private fun checkPermission() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
             PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RESULT_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                RESULT_CODE)
         }
     }
 
+    /**
+     * Checks if user agreed to grant permission to use its camera.
+     *
+     * If the camera permission is not enabled, exits out of activity.
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

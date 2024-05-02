@@ -6,8 +6,19 @@ import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
 
-const val RADIUS:Double = 7.5
+/**
+ * @author Thomas Kay
+ * @version 5/9/2024
+ *
+ * Math module to perform calculations of determining the user's distance between points and checks
+ * if user is within an appropriate distance away from a point.
+ */
+
+/** The radius of a point */
+const val RADIUS:Double = 8.0
+/** The radius of the Earth in meters */
 const val EARTH_RADIUS:Int = 6371000
+/** Value to convert from degrees to radians */
 const val TO_RADIANS = 180
 
 /**
@@ -26,7 +37,6 @@ fun calculateDistance(coord1: LatLng, coord2: LatLng):Double {
     return acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lng2-lng1)) * EARTH_RADIUS
 }
 
-//Move function to different class
 /**
  * Checks if the first coordinate point is within a radius of the second coordinate point.
  *

@@ -3,6 +3,13 @@ package edu.wcu.cs.thomas_kay.gpskotlin
 import com.google.android.gms.maps.model.LatLng
 
 /**
+ * @author Thomas Kay
+ * @version 5/9/2024
+ *
+ * Class that represents a data structure of a trail.
+ */
+
+/**
  * Data structure that stores the information of a trail.
  *
  * @param trailName The name of the trail.

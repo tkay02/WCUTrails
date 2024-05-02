@@ -73,7 +73,8 @@
             android:name=".ServiceGPS"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location" /> <!-- Important for map -->
+            android:foregroundServiceType="location" />
+        <!-- Important for map -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />

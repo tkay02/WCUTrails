@@ -26,10 +26,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
 const val FIREBASE_QR = "QR"
+const val QUALITY = 75
 
 class TrailQR : AppCompatActivity() {
 
@@ -88,6 +90,7 @@ class TrailQR : AppCompatActivity() {
                         for(j in i.children) {
                             qrCount++
                         }
+                        qrCount-- //Removes the name of the trail as part of the count
                         Log.v("debugging", "QR Count: $qrCount")
                     }
                 }
@@ -111,13 +114,13 @@ class TrailQR : AppCompatActivity() {
     }
 
     private fun putQrElementInDatabase() {
-        val qrElement = QREntry(qrCount, currentPoint.lat, currentPoint.lng)
-        val qrKey = reference.child(trailName).push().key
-        reference.child(trailName).child(qrKey!!).setValue(qrElement)
         if(qrCount == 0) {
             val trailNameData = Trail.TrailName(trailName)
             reference.child(trailName).setValue(trailNameData)
         }
+        val qrElement = QREntry(qrCount, currentPoint.lat, currentPoint.lng)
+        val qrKey = reference.child(trailName).push().key
+        reference.child(trailName).child(qrKey!!).setValue(qrElement)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -137,8 +140,9 @@ class TrailQR : AppCompatActivity() {
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val fileName = "QRCode$trailName$qrCount.jpeg"
             val file = File(path, fileName)
-            val outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100, outputStream)
+            // Change this to a buffered output stream
+            val outputStream = BufferedOutputStream(FileOutputStream(file))
+            bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, outputStream)
             outputStream.flush()
             outputStream.close()
             Toast.makeText(this, "Qr Entry has been successfully recorded",
