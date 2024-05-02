@@ -57,7 +57,7 @@ class TrailSelector : AppCompatActivity(), TrailAdapter.TrailItemWasClickedListe
             setResult(RESULT_OK, intent)
             finish()
         } else {
-            val intent = Intent(this, TrailObserver::class.java)
+            val intent = Intent(this, TrailQR::class.java)
             intent.putExtra(TRAIL_NAME, text)
             startActivity(intent)
         }
