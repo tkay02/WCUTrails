@@ -88,6 +88,7 @@ class TrailQR : AppCompatActivity() {
                         for(j in i.children) {
                             qrCount++
                         }
+                        qrCount-- //Removes the name of the trail as part of the count
                         Log.v("debugging", "QR Count: $qrCount")
                     }
                 }
@@ -111,13 +112,13 @@ class TrailQR : AppCompatActivity() {
     }
 
     private fun putQrElementInDatabase() {
-        val qrElement = QREntry(qrCount, currentPoint.lat, currentPoint.lng)
-        val qrKey = reference.child(trailName).push().key
-        reference.child(trailName).child(qrKey!!).setValue(qrElement)
         if(qrCount == 0) {
             val trailNameData = Trail.TrailName(trailName)
             reference.child(trailName).setValue(trailNameData)
         }
+        val qrElement = QREntry(qrCount, currentPoint.lat, currentPoint.lng)
+        val qrKey = reference.child(trailName).push().key
+        reference.child(trailName).child(qrKey!!).setValue(qrElement)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
