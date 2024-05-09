@@ -283,7 +283,7 @@ class MainActivity : AppCompatActivity() {
             this.map = it
             if(trailName != null) {
                 val application = application as TrailApplication
-                val trailArray = resources.getStringArray(R.array.name_of_trails);
+                val trailArray = application.getTrailNames()
                 val trail = application.getTrailList()[trailArray.indexOf(trailName)]
                 trailQueue.addAll(trail.iterate())
                 // Calls application's record points to populate map with trail points and to
