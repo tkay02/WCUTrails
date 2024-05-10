@@ -160,6 +160,11 @@ class Trail(val trailName:String) {
         return latlngList
     }
 
+    /**
+     * Data class to store trail name within the database.
+     *
+     * @property trailName The name of the trail.
+     */
     data class TrailName(val trailName:String = "")
 
     /**

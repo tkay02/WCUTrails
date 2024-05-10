@@ -52,6 +52,10 @@ const val QRLAT = "QRLat"
 const val QRLNG = "QRLng"
 /** Name for the score data for an intent */
 const val SCORE = "Score"
+/** Width used to set the width of the trail within the map */
+const val WIDTH:Float = 15f
+/** Padding used to animate camera to display user's current location */
+const val PADDING:Int = 115
 
 
 class MainActivity : AppCompatActivity() {

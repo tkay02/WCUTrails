@@ -13,17 +13,33 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
 
+/**
+ * @author Thomas Kay
+ * @version 5/9/2024
+ *
+ * Fragment to hold QR code for a host starting a game.
+ */
+
 class HostQR : Fragment() {
+    /** ImageView to display QR code */
     private lateinit var qrCode: ImageView
+    /** Bitmap to hold QR code data */
     private lateinit var bitmap: Bitmap
+    /** QR Generator used to create QR codes */
     private lateinit var encoder: QRGEncoder
 
+    /**
+     * Creates the view for the host qr fragment.
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_host_q_r, container, false)
     }
 
+    /**
+     * Creates the QR code to be displayed.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     fun createQR(code:String) {
         val view = requireView()
@@ -31,6 +47,9 @@ class HostQR : Fragment() {
         generateQR(code)
     }
 
+    /**
+     * Generates the QR code and applies the bitmap to the imageview.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun generateQR(code:String) {
         val code2 = "$TITLE code $code"

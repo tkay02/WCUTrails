@@ -17,8 +17,11 @@ import com.google.android.gms.maps.model.PolylineOptions
 import edu.wcu.cs.thomas_kay.gpskotlin.databinding.ActivityMapsBinding
 
 const val DEMO:String = "trailDemo1.db"
-const val WIDTH:Float = 15f
-const val PADDING:Int = 115
+
+/**
+ * This activity is not used; its sole purpose was to connect to Google for its Map API key.
+ */
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap

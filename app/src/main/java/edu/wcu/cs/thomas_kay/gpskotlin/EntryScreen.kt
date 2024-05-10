@@ -18,7 +18,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
  * @author Thomas Kay
  * @version 5/9/2024
  *
- * Menu screen
+ * Menu screen.
  */
 
 /** Code to store data for QR code information within an intent */
