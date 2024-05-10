@@ -172,12 +172,12 @@ class Trail(val trailName:String) {
      * the trail points, depending on the length of the trail. Also stores information about the
      * coordinates of the point and the pointers to the previous and next node.
      *
-     * @param pointID The id of the point in regard to the order of the trail (starting from 1 to
+     * @property pointID The id of the point in regard to the order of the trail (starting from 1 to
      * the size of the trail).
-     * @param lat The latitude coordinate.
-     * @param lng The longitude coordinate.
-     * @param prev Pointer to the previous point.
-     * @param next Pointer to the next point.
+     * @property lat The latitude coordinate.
+     * @property lng The longitude coordinate.
+     * @property prev Pointer to the previous point.
+     * @property next Pointer to the next point.
      */
     data class TrailPoint(val pointID:Int, val lat:Double, val lng:Double,
                      var prev:TrailPoint?, var next:TrailPoint?)
