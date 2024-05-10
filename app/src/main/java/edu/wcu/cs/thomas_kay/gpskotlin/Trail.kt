@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng
 /**
  * Data structure that stores the information of a trail.
  *
- * @param trailName The name of the trail.
+ * @property trailName The name of the trail.
  */
 class Trail(val trailName:String) {
     /** The length of the trail */
