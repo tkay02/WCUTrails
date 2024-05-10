@@ -1,6 +1,8 @@
 package edu.wcu.cs.thomas_kay.gpskotlin
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,7 @@ import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -83,6 +86,7 @@ class TrailQR : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trail_qr)
+        checkPermission()
         app = application as TrailApplication
         trailArray = app.getTrailNames()
         val bundle = intent.extras
@@ -300,6 +304,32 @@ class TrailQR : AppCompatActivity() {
             }
 
             override fun onFinish() {}
+        }
+    }
+
+    /**
+     * Checks if the user's external storage permission has been granted to the application.
+     */
+    private fun checkPermission() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+            PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE), RESULT_CODE_WRITE)
+        }
+    }
+
+    /**
+     * Checks if user agreed to grant permission to use its external storage.
+     *
+     * If the external storage permission is not enabled, exits out of activity.
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Write to external storage granted",Toast.LENGTH_LONG).show()
+        } else {
+            finish()
         }
     }
 
