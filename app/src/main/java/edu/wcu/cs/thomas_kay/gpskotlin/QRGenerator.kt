@@ -159,6 +159,7 @@ class QRGenerator : AppCompatActivity() {
                 val encryptedData = encodeQR(data)
                 // Generates QR code and sets up QR code to the image view
                 this.encoder = QRGEncoder(encryptedData, QRGContents.Type.TEXT, size)
+                encoder.colorBlack = ContextCompat.getColor(this, R.color.gps_color)
                 this.bitmap = this.encoder.bitmap
                 this.qr.setImageBitmap(this.bitmap)
                 // Can now save QR code data

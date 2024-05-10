@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -190,6 +191,7 @@ class TrailQR : AppCompatActivity() {
             size = size * 3 / 4
             val encryptedData = encodeQR(data)
             val encoder = QRGEncoder(encryptedData, QRGContents.Type.TEXT, size)
+            encoder.colorBlack = ContextCompat.getColor(this, R.color.gps_color)
             val bitmap = encoder.bitmap!!
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val fileName = "QRCode$trailName$qrCount.jpeg"

@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -286,6 +288,7 @@ class MainActivity : AppCompatActivity() {
         fragment.getMapAsync {
             this.map = it
             if(trailName != null) {
+                // Retrieves application to get trail data
                 val application = application as TrailApplication
                 val trailArray = application.getTrailNames()
                 val trail = application.getTrailList()[trailArray.indexOf(trailName)]
@@ -315,8 +318,9 @@ class MainActivity : AppCompatActivity() {
         }
         //LatLng object used for map to display current location
         val current = LatLng(lat, long)
-        this.prevMarker = this.map.addMarker(MarkerOptions().position(current).title(
-            "Current Location"))
+        this.prevMarker = this.map.addMarker(MarkerOptions().position(current).icon(
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)
+        ).title("Current Location"))
         // If the origin is not null, the current point is not near the origin, and the trail queue
         // contains the origin, displays distance between the start of the trail and the user
         if(origin != null && !isNearPoint(current, origin!!, RADIUS) &&
@@ -335,6 +339,7 @@ class MainActivity : AppCompatActivity() {
             }
             // If trail queue is not empty and the current point is near the head of the trail
             // queue, display updated path to user and poll the trail queue
+            // Maybe replace the if statement with a while loop if one point at a time is too slow
             if(!trailQueue.isEmpty() && isNearPoint(current, trailQueue.first(), RADIUS)) {
                 polylineList.add(trailQueue.removeFirst())
                 val completedPath = PolylineOptions()
@@ -350,6 +355,7 @@ class MainActivity : AppCompatActivity() {
             // If the trail queue is empty and an origin exists, exits out of the activity with the
             // score of the timer fragment being passed into an intent
             if(trailQueue.isEmpty() && origin != null) {
+                timer.stopCount()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra(SCORE, this.timer.getSeconds())
                 setResult(RESULT_OK, intent)

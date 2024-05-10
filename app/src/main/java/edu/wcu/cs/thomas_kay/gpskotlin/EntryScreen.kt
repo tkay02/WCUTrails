@@ -143,7 +143,7 @@ class EntryScreen : AppCompatActivity() {
             if(it.resultCode == RESULT_OK) {
                 val intent = it.data
                 if(intent != null) {
-                    val score = intent.getIntArrayExtra(SCORE)
+                    val score = intent.getIntExtra(SCORE, 0)
                     val newIntent = Intent(this, Score::class.java)
                     newIntent.putExtra(SCORE, score)
                     startActivity(newIntent)

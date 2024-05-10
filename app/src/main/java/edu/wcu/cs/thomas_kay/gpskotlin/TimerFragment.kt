@@ -55,6 +55,7 @@ class TimerFragment : Fragment() {
      */
     private fun startTimer() {
         this.timer = object: CountDownTimer(Long.MAX_VALUE, SECOND) {
+            // Updates the score and the display of the text box
             override fun onTick(millisUntilFinished: Long) {
                 val sec = seconds % SIXTY
                 val minutes = (seconds / SIXTY) % SIXTY
@@ -63,7 +64,7 @@ class TimerFragment : Fragment() {
                 val time = "${getTimeString(hours, true)}:${getTimeString(minutes, false)}:"+
                         getTimeString(sec, false)
                 textBox.text = time
-                // Increments seconds if they are less than the maximal amount
+                // Increments seconds if they are less than the maximum amount
                 if(seconds < MAX_SECONDS) {
                     seconds++
                 }
@@ -106,7 +107,7 @@ class TimerFragment : Fragment() {
     /** Returns the number of seconds counted */
     fun getSeconds():Int {
         // For testing
-        Toast.makeText(context, "${seconds.toInt()}", Toast.LENGTH_LONG).show()
+        //Toast.makeText(context, "${seconds.toInt()}", Toast.LENGTH_SHORT).show()
         return this.seconds.toInt()
     }
 }
