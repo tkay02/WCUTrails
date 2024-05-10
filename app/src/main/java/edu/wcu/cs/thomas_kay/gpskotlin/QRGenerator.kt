@@ -18,6 +18,7 @@ import androidmads.library.qrgenearator.QRGEncoder
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -187,7 +188,7 @@ class QRGenerator : AppCompatActivity() {
                     )
                     val fileName = String.format("QRcode%d.jpeg", System.currentTimeMillis())
                     val file = File(path, fileName)
-                    val outputStream = FileOutputStream(file)
+                    val outputStream = BufferedOutputStream(FileOutputStream(file))
                     this.bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, outputStream)
                     outputStream.flush()
                     outputStream.close()

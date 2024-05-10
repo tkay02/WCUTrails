@@ -194,7 +194,7 @@ class TrailQR : AppCompatActivity() {
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val fileName = "QRCode$trailName$qrCount.jpeg"
             val file = File(path, fileName)
-            // Change this to a buffered output stream
+            // Used buffered output stream to make saving faster
             val outputStream = BufferedOutputStream(FileOutputStream(file))
             bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, outputStream)
             outputStream.flush()
